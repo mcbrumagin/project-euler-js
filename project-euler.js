@@ -1,3 +1,4 @@
+var project = {}
 
 // PROBLEM #1
 
@@ -28,8 +29,8 @@ var getMultiples = function(/* ...integers, max */) {
     return multiples.sort(sortNum)
 }
 
-var solveProblem1 = function () {
-    return sum(getMultiples(5,3,10))
+project.solveProblem1 = function () {
+    return sum(getMultiples(5,3,1000))
 }
 
 
@@ -60,10 +61,67 @@ var fibonacci = function (max) {
     return fib(1,1)
 }
 
-var solveProblem2 = function () {
+project.solveProblem2 = function () {
     return sum(fibonacci(4000000).filter(isEven))
 }
 
+
+// PROBLEM #3
+
+var factor = function (num, test) {
+    return num % test == 0 ? num / test : 0
+}
+
+var findFactor = function (num, start) {
+    var test = start || 1, result = 0, max = num / 2
+    while (++test) {
+        result = factor(num, test)
+        if (result) break
+        if (test > max) return [0, test]
+    }
+    return [result, test]
+}
+
+var findPrimeFactor = function (num, start) {
+    var result = [num,0]
+	var degrees = -1
+    while (result[0]) { // todo - do-while
+        var last = result
+        result = findFactor(result[0], start)
+        degrees++
+    }
+    return [last[0], last[1], degrees]
+}
+
+project.solveProblem3 = function () {
+	var result = findPrimeFactor(600851475143)
+	return result[0]
+}
+
+
+// PROBLEM #4
+
+var isPalindromic = function (val) {
+	var valArray = val.toString().split('')
+	var revArray = valArray.slice(0).reverse()
+	return revArray.join() == valArray.join()
+}
+
+project.solveProblem4 = function () {
+	var largestProduct = 0
+	var product = 0
+	for (var i = 999; i > 0; i--) {
+		for (var j = 999; j > 0; j--) {
+			product = i * j
+			if (isPalindromic(product)
+				&& product > largestProduct) {
+					console.log(i,j)
+					largestProduct = product
+				}
+		}
+	}
+	return largestProduct
+}
 
 // Linear Congruential Generator for Euler #150
 function generate(length) {
@@ -76,4 +134,14 @@ function generate(length) {
         tLast = t
     }
     console.log(data)
+}
+
+var solve = function () {
+	var solutions = []
+	for (var prop in project) {
+		console.time(prop)
+		solutions.push(project[prop]())
+		console.timeEnd(prop)
+	}
+	return solutions
 }
