@@ -19,9 +19,9 @@ var getMultiples = function(/* ...integers, max */) {
     var done = false
     while(lastMax < max && !done) {
         for (var i = 0; i < integers.length; i++) {
-            var mult = multiplier * integers[i]
+        	var mult = multiplier * integers[i]
             if (multiples.indexOf(mult) == -1 && mult < max) multiples.push(mult)
-            if (mult > max && i == integers.length - 1) done = true
+         	if (mult > max && i == integers.length - 1) done = true
         }
         var lastMax = multiples[multiples.length - 1]
         multiplier++
@@ -73,8 +73,9 @@ var factor = function (num, test) {
 }
 
 var findFactor = function (num, start) {
+    if (num <= 3) return [0,0]
     var test = start || 1, result = 0, max = num / 2
-    while (++test) {
+    while (test++) {
         result = factor(num, test)
         if (result) break
         if (test > max) return [0, test]
@@ -117,10 +118,122 @@ project.solveProblem4 = function () {
 				&& product > largestProduct) {
 					console.log(i,j)
 					largestProduct = product
-				}
+			}
 		}
 	}
 	return largestProduct
+}
+
+
+// PROBLEM #5
+var n = '..'
+
+function Set(start, iteration, end) {
+	var count = 0
+	this.set = {}
+	this.set[start] = start
+	while (++count < end) {
+		this.set[start + iteration*count] = start + iteration*count
+	}
+}
+Set.prototype.add = function(val) {
+    this.set[val] = val
+}
+Set.prototype.get = function(val) {
+    return this.set[val]
+}
+Set.prototype.remove = function(val) {
+    delete this.set[val]
+}
+Set.prototype.valueOf = function() {
+    var array = []
+    for (var prop in this.set) {
+        if (this.set[prop] != undefined)
+            array.push(this.set[prop])
+    }
+    return array
+}
+
+var factor = function (num, test) {
+    return num % test == 0 ? num / test : 0
+}
+
+var factorial = function (num) {
+	var product = 1
+	num++
+	while (--num > 0) {
+		product *= num
+	}
+	return product
+}
+
+/*Array.prototype.remove = function (val) {
+    var ind = this.indexOf(val)
+    return this.slice(0, ind).concat(this.slice(ind+1)) 
+}*/
+
+var each = function (objs, fn) {
+    if (objs.length) {
+        var results = []
+        for (var i = 0; i < objs.length; i++) {
+            results.push(fn(objs[i]))
+        }
+        return results
+    } else return fn(objs)
+}
+
+var primeFactorization = function (num) {
+    var done = false
+    var factors = {}
+    while (!done) {
+        var factor = findFactor(num)
+        if (factor[0]) {
+            if (!factors[factor[1]]) factors[factor[1]] = 1
+            else factors[factor[1]]++
+            num = num / factor[1]
+        } else {
+            done = true
+            if (!factors[num]) factors[num] = 1
+            else factors[num]++
+        }
+    }
+    return factors
+}
+
+var mult = function (last, next) { return last * next }
+var product = function(array) { return array.reduce(mult) }
+
+var leastCommonMultiple = function (array) {
+	var maxFactors = {}
+	for (var i = 0; i < array.length; i++) {
+		var factors = primeFactorization(array[i])
+        console.log(factors)
+		for (var prop in factors) {
+			if (!maxFactors[prop]
+				|| maxFactors[prop] < factors[prop])
+					maxFactors[prop] = factors[prop]
+		}
+	}
+    console.log(maxFactors)
+	var maxFactorArray = []
+	for (var prop in maxFactors) {
+		for (var i = 0; i < maxFactors[prop]; i++) {
+			maxFactorArray.push(prop)
+		}
+	}
+	return product(maxFactorArray)
+}
+
+var range = function (start, increment, end) {
+	var array = []
+	for (var i = start; i < end; i = i + increment) {
+		array.push(i)
+	}
+	return array
+}
+
+project.solveProblem5 = function () {
+	return leastCommonMultiple(range(1,1,20))
 }
 
 // Linear Congruential Generator for Euler #150
