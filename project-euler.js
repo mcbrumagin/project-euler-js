@@ -19,9 +19,9 @@ var getMultiples = function(/* ...integers, max */) {
     var done = false
     while(lastMax < max && !done) {
         for (var i = 0; i < integers.length; i++) {
-        	var mult = multiplier * integers[i]
+            var mult = multiplier * integers[i]
             if (multiples.indexOf(mult) == -1 && mult < max) multiples.push(mult)
-         	if (mult > max && i == integers.length - 1) done = true
+            if (mult > max && i == integers.length - 1) done = true
         }
         var lastMax = multiples[multiples.length - 1]
         multiplier++
@@ -85,7 +85,7 @@ var findFactor = function (num, start) {
 
 var findPrimeFactor = function (num, start) {
     var result = [num,0]
-	var degrees = -1
+    var degrees = -1
     while (result[0]) { // todo - do-while
         var last = result
         result = findFactor(result[0], start)
@@ -95,33 +95,32 @@ var findPrimeFactor = function (num, start) {
 }
 
 project.solveProblem3 = function () {
-	var result = findPrimeFactor(600851475143)
-	return result[0]
+    var result = findPrimeFactor(600851475143)
+    return result[0]
 }
 
 
 // PROBLEM #4
 
 var isPalindromic = function (val) {
-	var valArray = val.toString().split('')
-	var revArray = valArray.slice(0).reverse()
-	return revArray.join() == valArray.join()
+    var valArray = val.toString().split('')
+    var revArray = valArray.slice(0).reverse()
+    return revArray.join() == valArray.join()
 }
 
 project.solveProblem4 = function () {
-	var largestProduct = 0
-	var product = 0
-	for (var i = 999; i > 0; i--) {
-		for (var j = 999; j > 0; j--) {
-			product = i * j
-			if (isPalindromic(product)
-				&& product > largestProduct) {
-					console.log(i,j)
-					largestProduct = product
-			}
-		}
-	}
-	return largestProduct
+    var largestProduct = 0
+    var product = 0
+    for (var i = 999; i > 0; i--) {
+        for (var j = 999; j > 0; j--) {
+            product = i * j
+            if (isPalindromic(product)
+                && product > largestProduct) {
+                    largestProduct = product
+            }
+        }
+    }
+    return largestProduct
 }
 
 
@@ -129,12 +128,12 @@ project.solveProblem4 = function () {
 var n = '..'
 
 function Set(start, iteration, end) {
-	var count = 0
-	this.set = {}
-	this.set[start] = start
-	while (++count < end) {
-		this.set[start + iteration*count] = start + iteration*count
-	}
+    var count = 0
+    this.set = {}
+    this.set[start] = start
+    while (++count < end) {
+        this.set[start + iteration*count] = start + iteration*count
+    }
 }
 Set.prototype.add = function(val) {
     this.set[val] = val
@@ -143,12 +142,13 @@ Set.prototype.get = function(val) {
     return this.set[val]
 }
 Set.prototype.remove = function(val) {
-    delete this.set[val]
+    // using "delete" is much slower for large sets
+    this.set[val] = undefined
 }
 Set.prototype.valueOf = function() {
     var array = []
     for (var prop in this.set) {
-        if (this.set[prop] != undefined)
+        if (this.set[prop] !== undefined)
             array.push(this.set[prop])
     }
     return array
@@ -159,12 +159,12 @@ var factor = function (num, test) {
 }
 
 var factorial = function (num) {
-	var product = 1
-	num++
-	while (--num > 0) {
-		product *= num
-	}
-	return product
+    var product = 1
+    num++
+    while (--num > 0) {
+        product *= num
+    }
+    return product
 }
 
 /*Array.prototype.remove = function (val) {
@@ -204,64 +204,50 @@ var mult = function (last, next) { return last * next }
 var product = function(array) { return array.reduce(mult) }
 
 var leastCommonMultiple = function (array) {
-	var maxFactors = {}
-	for (var i = 0; i < array.length; i++) {
-		var factors = primeFactorization(array[i])
-        console.log(factors)
-		for (var prop in factors) {
-			if (!maxFactors[prop]
-				|| maxFactors[prop] < factors[prop])
-					maxFactors[prop] = factors[prop]
-		}
-	}
-    console.log(maxFactors)
-	var maxFactorArray = []
-	for (var prop in maxFactors) {
-		for (var i = 0; i < maxFactors[prop]; i++) {
-			maxFactorArray.push(prop)
-		}
-	}
-	return product(maxFactorArray)
+    var maxFactors = {}
+    for (var i = 0; i < array.length; i++) {
+        var factors = primeFactorization(array[i])
+        for (var prop in factors) {
+            if (!maxFactors[prop]
+                || maxFactors[prop] < factors[prop])
+                    maxFactors[prop] = factors[prop]
+        }
+    }
+    var maxFactorArray = []
+    for (var prop in maxFactors) {
+        for (var i = 0; i < maxFactors[prop]; i++) {
+            maxFactorArray.push(prop)
+        }
+    }
+    return product(maxFactorArray)
 }
 
 var range = function (start, increment, end) {
-	var array = []
-	for (var i = start; i < end; i = i + increment) {
-		array.push(i)
-	}
-	return array
+    var array = []
+    for (var i = start; i < end; i = i + increment) {
+        array.push(i)
+    }
+    return array
 }
 
 project.solveProblem5 = function () {
-	return leastCommonMultiple(range(1,1,20))
+    return leastCommonMultiple(range(1,1,20))
 }
 
 
 // PROBLEM #6
 
 project.solveProblem6 = function () {
-	var numbers = range(1, 1, 101)
-	var sumOfSquares = sum(each(numbers, function (val) {
-		return Math.pow(val, 2)
-	}))
-	var squareOfSums = Math.pow(sum(numbers), 2)
-	return squareOfSums - sumOfSquares
+    var numbers = range(1, 1, 101)
+    var sumOfSquares = sum(each(numbers, function (val) {
+        return Math.pow(val, 2)
+    }))
+    var squareOfSums = Math.pow(sum(numbers), 2)
+    return squareOfSums - sumOfSquares
 }
 
 
 // PROBLEM #7
-
-var getGreaterMultiples = function(val, max) {
-    var multiples = []
-    var mult = 2
-    var next = mult * val
-    do {
-        multiples.push(next)
-        mult++
-        next = mult * val
-    } while(next < max)
-    return multiples
-}
 
 var estimateNthPrime = function (n) {
     if (n >= 7022) return n * Math.log(n) + n * Math.log(Math.log(n - 0.9385))
@@ -273,8 +259,13 @@ var sieveOfEratosthenes = function(max) {
     primes.set[2] = 2
     for (var prop in primes.set) {
         if (prop > max/2) break
-        var multiples = getGreaterMultiples(primes.set[prop], max)
-        each(multiples, function(val) { primes.remove(val) })
+        var mult = 2
+        var next = mult * prop
+        while(next < max) {
+            mult++
+            next = mult * prop
+            primes.remove(next)
+        }
     }
     return primes.valueOf()
 }
@@ -307,34 +298,73 @@ var generatePrimes = function (amount) {
 }
 
 var last = function (array) {
-	return array[array.length - 1]
+    return array[array.length - 1]
 }
 
 var solveProblem7_old = function () {
-	return last(generatePrimes(10001))
+    return last(generatePrimes(10001))
 }
 
 project.solveProblem7 = function () {
-	return getNthPrime(10001)
+    return getNthPrime(10001)
 }
 
 
 // PROBLEM #8
 
 project.solveProblem8 = function () {
-	var data = "7316717653133062491922511967442657474235534919493496983520312774506326239578318016984801869478851843858615607891129494954595017379583319528532088055111254069874715852386305071569329096329522744304355766896648950445244523161731856403098711121722383113622298934233803081353362766142828064444866452387493035890729629049156044077239071381051585930796086670172427121883998797908792274921901699720888093776657273330010533678812202354218097512545405947522435258490771167055601360483958644670632441572215539753697817977846174064955149290862569321978468622482839722413756570560574902614079729686524145351004748216637048440319989000889524345065854122758866688116427171479924442928230863465674813919123162824586178664583591245665294765456828489128831426076900422421902267105562632111110937054421750694165896040807198403850962455444362981230987879927244284909188845801561660979191338754992005240636899125607176060588611646710940507754100225698315520005593572972571636269561882670428252483600823257530420752963450"
-	var sliceSize = 13
-	var test = data.slice(0, sliceSize).split('')
-	var largestProduct = 0
-	for (var i = sliceSize; i < data.length; i++) {
-		var currentProduct = product(test)
-		if (currentProduct > largestProduct) largestProduct = currentProduct
-		test.shift()
-	    test.push(data[i])
-	}
-	return largestProduct
+    var data = "7316717653133062491922511967442657474235534919493496983520312774506326239578318016984801869478851843858615607891129494954595017379583319528532088055111254069874715852386305071569329096329522744304355766896648950445244523161731856403098711121722383113622298934233803081353362766142828064444866452387493035890729629049156044077239071381051585930796086670172427121883998797908792274921901699720888093776657273330010533678812202354218097512545405947522435258490771167055601360483958644670632441572215539753697817977846174064955149290862569321978468622482839722413756570560574902614079729686524145351004748216637048440319989000889524345065854122758866688116427171479924442928230863465674813919123162824586178664583591245665294765456828489128831426076900422421902267105562632111110937054421750694165896040807198403850962455444362981230987879927244284909188845801561660979191338754992005240636899125607176060588611646710940507754100225698315520005593572972571636269561882670428252483600823257530420752963450"
+    var sliceSize = 13
+    var test = data.slice(0, sliceSize).split('')
+    var largestProduct = 0
+    for (var i = sliceSize; i < data.length; i++) {
+        var currentProduct = product(test)
+        if (currentProduct > largestProduct) largestProduct = currentProduct
+        test.shift()
+        test.push(data[i])
+    }
+    return largestProduct
 }
 
+
+// PROBLEM #9
+
+var computeSquares = function(max) {
+    var test = 3
+    var results = {}
+    var result = 4
+    while(test < max) {
+        results[result] = result
+        result = Math.pow(test,2)
+        test++
+    }
+    return results
+}
+
+project.solveProblem9 = function() {
+    var squares = computeSquares(1000)
+    for (var aSq in squares) {
+        aSq = Number(aSq)
+        for (var bSq in squares) {
+            bSq = Number(bSq)
+            if (bSq > aSq) {
+                var c = Math.pow(aSq + bSq, 0.5)
+                if (c % 1 == 0) {
+                    var a = Math.pow(aSq, 0.5)
+                    var b = Math.pow(bSq, 0.5)
+                    if (a + b + c == 1000) return a * b * c
+                }
+            }
+        }
+    }
+}
+
+
+// PROBLEM #10
+
+project.solveProblem10 = function () {
+    return sum(sieveOfEratosthenes(2000000))
+}
 
 // Linear Congruential Generator for Euler #150
 function generate(length) {
@@ -346,15 +376,16 @@ function generate(length) {
         data.push(s_k)
         tLast = t
     }
-    console.log(data)
 }
 
 var solve = function () {
-	var solutions = []
-	for (var prop in project) {
-		console.time(prop)
-		solutions.push(project[prop]())
-		console.timeEnd(prop)
-	}
-	return solutions
+    var solutions = []
+    for (var prop in project) {
+        if (prop != 'longrunning'){
+            console.time(prop)
+            solutions.push(project[prop]())
+            console.timeEnd(prop)
+        }
+    }
+    return solutions
 }
