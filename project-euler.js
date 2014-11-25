@@ -236,6 +236,88 @@ project.solveProblem5 = function () {
 	return leastCommonMultiple(range(1,1,20))
 }
 
+
+// PROBLEM #6
+
+project.solveProblem6 = function () {
+	var numbers = range(1, 1, 101)
+	var sumOfSquares = sum(each(numbers, function (val) {
+		return Math.pow(val, 2)
+	}))
+	var squareOfSums = Math.pow(sum(numbers), 2)
+	return squareOfSums - sumOfSquares
+}
+
+
+// PROBLEM #7
+
+var getGreaterMultiples = function(val, max) {
+    var multiples = []
+    var mult = 2
+    var next = mult * val
+    do {
+        multiples.push(next)
+        mult++
+        next = mult * val
+    } while(next < max)
+    return multiples
+}
+
+var estimateNthPrime = function (n) {
+    if (n >= 7022) return n * Math.log(n) + n * Math.log(Math.log(n - 0.9385))
+    else return n * Math.log(n) + Math.log(Math.log(n))
+}
+
+var sieveOfEratosthenes = function(max) {
+    var primes = new Set(3,2,max/2-1)
+    primes.set[2] = 2
+    for (var prop in primes.set) {
+        if (prop > max/2) break
+        var multiples = getGreaterMultiples(primes.set[prop], max)
+        each(multiples, function(val) { primes.remove(val) })
+    }
+    return primes.valueOf()
+}
+
+var getNthPrime = function(n) {
+    var upperBound = estimateNthPrime(n)
+    var primes = sieveOfEratosthenes(upperBound)
+    return primes[n-1]
+}
+
+var generatePrimes = function (amount) {
+    var count = 1
+    var primes = [2]
+    var test = 3
+    while (count < amount) {
+        for (var i = 2; i < test; i++) {
+            var prime = true
+            if (factor(test, i)) {
+                prime = false
+                break
+            }
+        }
+        if (prime) {
+            primes.push(test)
+            count++
+        }
+        test++
+    }
+    return primes
+}
+
+var last = function (array) {
+	return array[array.length - 1]
+}
+
+project.solveProblem7 = function () {
+	return last(generatePrimes(10001))
+}
+
+project.solveProblem7_1 = function () {
+	return getNthPrime(10001)
+}
+
 // Linear Congruential Generator for Euler #150
 function generate(length) {
     var data = []
